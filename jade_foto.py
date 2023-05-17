@@ -1,152 +1,89 @@
-import imaplib
-import sys, os
-from distutils.util import execute
+import os
 import shutil
-from time import sleep
-import keyboard
 import glob
-import datetime
-import win32console
-import win32gui
-from PIL import Image
-from tkinter import filedialog
 from pathlib import Path
-
-folder_selected = filedialog.askdirectory()
-
-if not folder_selected:
-    exit()
-
-file_list = glob.glob(folder_selected)
+from tkinter import filedialog
+from PIL import Image
 
 
-
-for file in file_list:
-    carpeta_list = file
-    
-#retorna todos los valores que tengan los parametros que puse
-def litar_archivo(desde_inicio):
-    listar=glob.glob(desde_inicio)
-    return listar
-
-def extraer_ann_mes (i,n=10):
-    return i[4:n]
-
-def extraer_ann (i,n=8):
-    return i[4:n]
-
-def extraer_ann_2 (i,n=4):
-    return i[0:n]
-
-def extraer_ann_mes_2 (i,n=6):
-    return i[0:n]
-
-list_destino = ['IMG_*', 'IMG-*']
-
-for desde_inicio in list_destino:
-    try:
-        
-     desde_inicio=carpeta_list+'/'+desde_inicio
-     
-     resultado =litar_archivo(desde_inicio)
-     for img_fichero in resultado:
-       
-        #imagen_fichero = Path(img_fichero).stem
-        imagen_fichero=os.path.split(img_fichero)
-        imagen_fichero=imagen_fichero[1]
-        
-        
-        destino_fin ="Fotos/"+os.path.join(extraer_ann(imagen_fichero)) +"/"+os.path.join(extraer_ann_mes(imagen_fichero))
-        
-       
-        os.makedirs(destino_fin, exist_ok=True)
-        
-        picture=Image.open(img_fichero)
-        
-       
-        picture.save(destino_fin+'/'+imagen_fichero,optimize= True, quality=60)
-        #shutil.copy2(img_fichero,destino_fin)
-        print (imagen_fichero)
-        os.remove(img_fichero)
-        #shutil.copy2(i,destino_fin)
-        
-    except Exception as e:
-     pass
-
-desde_inicio='*.jpg'
-
-try:
-     desde_inicio=carpeta_list+'/'+desde_inicio
-        
-     resultado =litar_archivo(desde_inicio)
-     for img_fichero in resultado:      
-         
-        #imagen_fichero = Path(img_fichero).stem
-        imagen_fichero=os.path.split(img_fichero)
-        imagen_fichero=imagen_fichero[1]
-        
-        
-        destino_fin ="Fotos/"+os.path.join(extraer_ann_2(imagen_fichero)) +"/"+os.path.join(extraer_ann_mes_2(imagen_fichero))
-        os.makedirs(destino_fin, exist_ok=True)
-        picture=Image.open(img_fichero)
-        
-        picture.save(destino_fin+'/'+imagen_fichero,optimize= True, quality=60)
-        #shutil.copy2(img_fichero,destino_fin)
-        print (imagen_fichero)
-        os.remove(img_fichero)
-        #shutil.copy2(i,destino_fin)
-        
-except Exception as e:
-     pass
- 
-#PARA MOVER LOS VIDEOS
+def select_folder():
+    """
+    Función que muestra un diálogo para seleccionar una carpeta
+    y retorna la ruta de la carpeta seleccionada.
+    Si el usuario no selecciona ninguna carpeta, la función sale del programa.
+    """
+    folder_selected = filedialog.askdirectory()
+    if not folder_selected:
+        exit()
+    return folder_selected
 
 
-list_destino = ['VID_*', 'VID-*']
+def get_files_from_folder(folder_selected, pattern):
+    """
+    Función que recibe la ruta de una carpeta y un patrón de búsqueda,
+    y retorna una lista de rutas de los archivos que coinciden con el patrón.
+    """
+    return glob.glob(os.path.join(folder_selected, pattern))
 
-for desde_inicio in list_destino:
-    try:
-     
-     desde_inicio=carpeta_list+'/'+desde_inicio   
-     resultado =litar_archivo(desde_inicio)    
-     for vid_fichero in resultado:
-        
-      
-        
-        video_fichero = Path(vid_fichero).stem
-        
-        
-        
-        destino_fin ="Videos/"+os.path.join(extraer_ann(video_fichero)) +"/"+os.path.join(extraer_ann_mes(video_fichero))
-        os.makedirs(destino_fin, exist_ok=True)
-        #picture=Image.open(imagen_fichero)
-        shutil.copy2(vid_fichero,destino_fin)
-        print (video_fichero)
-        os.remove(vid_fichero)
-        #shutil.copy2(i,destino_fin)
-        
-    except Exception as e:
-     pass
- 
- 
-desde_inicio='*.mp4'
 
-try:
-     desde_inicio=carpeta_list+'/'+desde_inicio
-        
-     resultado =litar_archivo(desde_inicio)
-     for vid_fichero in resultado:      
-         
-        video_fichero = Path(vid_fichero).stem
-        
-        destino_fin ="Videos/"+os.path.join(extraer_ann_2(video_fichero)) +"/"+os.path.join(extraer_ann_mes_2(video_fichero))
-        os.makedirs(destino_fin, exist_ok=True)
-        #picture=Image.open(video_fichero)
-        #picture=picture.rotate(270, expand=True)
-        shutil.copy2(vid_fichero,destino_fin)
-        print (video_fichero)
-        os.remove(vid_fichero)
-        #shutil.copy2(i,destino_fin)
-        
-except Exception as e:
-     pass
+def extract_year_month(filename, start, end):
+    """
+    Función que recibe el nombre de un archivo y dos índices
+    que indican el inicio y fin de la subcadena a extraer del nombre del archivo.
+    Retorna la subcadena extraída.
+    """
+    return filename[start:end]
+
+
+def organize_images(folder_selected):
+    """
+    Función que recibe la ruta de una carpeta y mueve las imágenes
+    que coinciden con los patrones definidos a una estructura de carpetas
+    organizada por año y mes.
+    """
+    image_patterns = ['IMG_*', 'IMG-*']
+    for pattern in image_patterns:
+        files = get_files_from_folder(folder_selected, pattern)
+        for file in files:
+            filename = os.path.split(file)[1]
+            year = extract_year_month(filename, 4, 8)
+            month = extract_year_month(filename, 8, 10)
+            destination = os.path.join("Fotos", year, f"{year}{month}")
+            os.makedirs(destination, exist_ok=True)
+            picture = Image.open(file)
+            picture.save(os.path.join(destination, filename),
+                         optimize=True, quality=60)
+            os.remove(file)
+
+
+def organize_videos(folder_selected):
+    """
+    Función que recibe la ruta de una carpeta y mueve los videos
+    que coinciden con los patrones definidos a una estructura de carpetas
+    organizada por año y mes.
+    """
+    video_patterns = ['VID_*', 'VID-*']
+    for pattern in video_patterns:
+        files = get_files_from_folder(folder_selected, pattern)
+        for file in files:
+            filename = Path(file).stem
+            year = extract_year_month(filename, 4, 8)
+            month = extract_year_month(filename, 8, 10)
+            destination = os.path.join("Videos", year, f"{year}{month}")
+            os.makedirs(destination, exist_ok=True)
+            shutil.copy2(file, destination)
+            os.remove(file)
+
+
+def main():
+    """
+    Función principal que llama a las funciones para organizar las imágenes y videos
+    en una estructura de carpetas organizada por año y mes.
+    """
+    folder_selected = select_folder()
+    organize_images(folder_selected)
+    organize_videos(folder_selected)
+
+
+if __name__ == "__main__":
+    main()
