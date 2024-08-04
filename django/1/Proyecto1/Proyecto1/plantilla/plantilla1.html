@@ -1,0 +1,37 @@
+<html>
+    <body>
+        {%include "superior/barra.html"%}
+    <h1 style="color: red;">
+    Esta es mi primera vista en django
+    </h1>
+    {% comment %}
+        
+        Comentario, no utilices mucho codigo aqui #
+    
+        {% endcomment %}
+
+
+    {%if nombre_person == 'felix' %}
+    <p>Es el programador titular</p>
+    {%else%}
+    <p>No es el profesor titular</p>
+    {%endif%}
+
+
+    <p>El nombre que mande es {{nombre_person.upper}} ,{{apellido_person|first}}</p>
+    <p>El D&iacute;a de hoy es {{fecha.day}}/{{fecha.month}}/{{fecha.year}}</p>
+    <p><strong>Temas de Clases:</strong></p>
+    <ul> 
+    {%if temas%}
+
+        {%for el_tema in temas %}    
+        <li>{{el_tema.capitalize}}</li>    
+        {%endfor %}
+
+    {%else %}
+    <p>No hay informacion para mostrar</p>
+
+    {%endif%}
+    </ul>
+    </body>
+    </html>
