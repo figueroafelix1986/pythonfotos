@@ -52,7 +52,7 @@ def organize_images(folder_selected):
             os.makedirs(destination, exist_ok=True)
             picture = Image.open(file)
             picture.save(os.path.join(destination, filename),
-                         optimize=True, quality=60)
+                        optimize=True, quality=60)
             os.remove(file)
 
 

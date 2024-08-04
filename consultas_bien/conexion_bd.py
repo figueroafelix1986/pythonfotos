@@ -31,6 +31,18 @@ class ConexionDB:
             mb.showerror("Error", error_postgres)
             sys.exit()
             
+    def conexion_sqlserver(self):
+        try:
+            sql_params = self.conexiones["sqlserver"]
+            conn_sql = pyodbc.connect(f"DRIVER={{SQL Server}};SERVER={sql_params['server']};PORT={sql_params['port']};UID={sql_params['user']};PWD={sql_params['password']};DATABASE={sql_params['database']}")
+            #cur_pg = conn_pg.cursor()
+            #mb.showinfo("Conexion", "Conexion exitosa a PostgreSQL")
+            return conn_sql
+        except Exception as error_sqlserver:
+            mb.showerror("Error", error_sqlserver)
+            sys.exit()       
+            
+            
     def usuario_sistema(self):
         usuario_sist=self.conexiones["nomb_usuario"]
         usuario=usuario_sist['usuario']

@@ -5,5 +5,12 @@
     "user": "postgres",
     "password": "pasword",
     "database": "basedatos"
+    },
+    "sqlserver": {
+    "server": "localhost",
+    "port": 1433,
+    "user": "sa",
+    "password": "T111111t",
+    "database": "BD"
     }
 }
