@@ -7,17 +7,17 @@ class Persona(object):
     def __init__(self,nombre,apellido):
         self.nombre=nombre
         self.apellido=apellido
+        self.fecha_actual=datetime.datetime.now()
 
+p1=Persona ("felix","primero")
 
-def saludo(request):
-    
-    p1=Persona ("felix","primero")
+def saludo(request):    
     
     nombre=p1.nombre
     
     apellidos=p1.apellido
     
-    fecha_actual =datetime.datetime.now()
+    fecha_actual =p1.fecha_actual
     
     temas_curso=["plantilla","modelos","fromulario","vista"]
     
@@ -37,6 +37,15 @@ def saludo(request):
     
     return render(request, "plantilla1.html",ctx)
 
+def cursos(request):
+
+    ctx=({"dame_fecha":p1.fecha_actual})
+    return render(request, "Cursos.html",ctx)
+
+
+def cursos1(request):
+
+    return render(request, "Cursos1.html")
 
 def despedida(request):
     variable='me voy django'
