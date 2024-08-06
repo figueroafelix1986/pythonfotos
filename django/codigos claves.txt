@@ -1,0 +1,75 @@
+python -m venv nombre_del_entorno
+
+nombre_del_entorno\Scripts\activate
+
+pip install nombre_del_paquete
+
+deactivate
+
+
+pip install Django==5.0.7
+
+django-admin --version
+
+//Crear proyecto
+django-admin startproject Proyecto1
+
+
+python manage.py help
+
+//Forma proyecto sqllite
+python manage.py migrate
+
+
+//Ejecutar servidor 
+python manage.py runserver
+
+//Utilizar plantilla 
+plt=Template(doc_externo.read())
+ctx=Context()
+documento=plt.render(ctx)
+
+
+//crear html rapidp
+!Enter tab
+
+
+
+_____________________________________________
+
+Crear una nueva aplicación:
+python manage.py startapp nombre_de_la_app
+
+
+crear base de datos
+python manage.py makemigrations
+
+crear sql
+python manage.py sqlmigrate nombre_de_la_app 0001
+
+crea tablas 
+python manage.py migrate
+
+
+
+instrucciones para guardar en dos lineas
+>>>art=Articulo(nombre="camisa", seccion="ropa", precio=75)       
+>>> art.save()
+en una linea
+>>art=Articulo.objects.create(nombre="taladro", seccion="ferreteria", precio=65)
+
+Actualizar 
+art.precio=77
+art.save()
+
+eliminar
+art=Articulo.objects.get(id=2)
+art.delete()
+
+Listar
+Lista=Articulo.objects.all()
+Lista.query.__str__()
+
+
+instalar postgresql
+pip install psycopg2
