@@ -70,6 +70,30 @@ Listar
 Lista=Articulo.objects.all()
 Lista.query.__str__()
 
+Crear super administracion
+python manage.py createsuperuser
 
+f*05
 instalar postgresql
 pip install psycopg2
+
+'bnax qloa bwvq rqbw'
+___________________________________________________________________________________
+
+Pasos de carpetas
+registrar la app
+
+Proyecto
+settings (Escribir el nombre de la aplicacion, tambien se configura la conexion de la base de datos que se va a trabajar)
+urls del proyecto (Estan configuradas las urls de las aplicaciones)
+
+Aplicacion
+
+
+urls de las aplicaciones (se configura los nombres que seran llamados de las vistas y los metodos que se encuentran en los viws  )
+models (se configura la estructura que tendran las tablas, campos)
+
+
+
+
+
