@@ -1,0 +1,21 @@
+{% extends "ProyectowebApp/base.html" %}
+
+{% load static %}
+
+
+{% block content %}
+
+    {% for servicio in todo_servicios %}
+
+    <div class="container mt-5">
+        <h2 class="text-center">{{ servicio.titulo }}</h2>
+        <p class="lead">{{ servicio.contenido }}</p>
+        <div class="text-center">
+            <img src="{{ servicio.imagen.url }}" class="img-fluid rounded shadow" alt="{{ servicio.titulo }}">
+        </div>
+    </div>
+    
+
+    {% endfor %}
+
+{% endblock %}

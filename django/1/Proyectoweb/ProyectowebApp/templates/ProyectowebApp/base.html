@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Pedidos</title>
+
+{% load static %}
+
+    <link href="{% static 'ProyectowebApp/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <!--<link rel="stylesheet" href="{% static 'ProyectowebApp/styles.css' %}">-->
+</head>
+
+
+<body >
+    <!--style="background-image: url('{% static 'ProyectowebApp/img/background.jpg' %}'); background-size: cover; background-attachment: fixed;"-->
+<header class="text-center py-3">
+        <h1>Gestión de Pedidos</h1>
+    </header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item {% if request.path == '/' %}active{% endif %}"><a class="nav-link" href="{% url 'Home' %}">Inicio</a></li>
+                <li class="nav-item {% if request.path == '/servicios/' %}active{% endif %}"><a class="nav-link" href="{% url 'Servicios' %}">Servicio</a></li>
+                <li class="nav-item {% if request.path == '/tienda/' %}active{% endif %}"><a class="nav-link" href="{% url 'Tienda' %}">Tienda</a></li>
+                <li class="nav-item {% if request.path == '/contacto/' %}active{% endif %}"><a class="nav-link" href="{% url 'Contacto' %}">Contacto</a></li>
+                <li class="nav-item {% if request.path == '/blog/' %}active{% endif %}"><a class="nav-link" href="{% url 'Blog' %}">Blog</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!--Contenido cambiante-->
+
+    {% block content %}
+
+
+    {% endblock %}
+
+    <footer class="bg-light text-center py-3 ">
+        <a href="privacidad.html">Política de privacidad</a> | 
+        <a href="aviso_legal.html">Aviso Legal</a> | 
+        <a href="cookies.html">Cookies</a><br/>
+        Gestión de Pedidos 2020
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
