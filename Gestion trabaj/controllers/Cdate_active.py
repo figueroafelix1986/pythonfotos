@@ -9,7 +9,6 @@ session = db.get_session()
 class ControllersDateActive:
     def __init__(self):
         pass  # Puedes inicializar variables o configuraciones aquí si es necesario
-        self.prueba=self.actualizar_false(self)
 
     def guardar_date_active(self, objeto):
         
@@ -28,14 +27,14 @@ class ControllersDateActive:
 
                 # print("El empleado ya existe en la base de datos.")
             else: 
-                self.prueba              
+                self.actualizar_false(self)
                 session.add(objeto)
                 session.commit()
                 
                 messagebox.showinfo("Guardar", "Se guardo con exito")
         except Exception as e:
             session.rollback()
-            print(f"Error al guardar el objeto: {e}")
+            messagebox.showerror("ERROR", f"Error al guardar el objeto: {e}")
 
     def actualizar_date_active(self, objeto):
         existing_obj = session.query(DateActive).filter_by(
@@ -49,10 +48,12 @@ class ControllersDateActive:
 
     def listar_date_active(self):
         try:
-            activos = session.query(DateActive).filter_by(activo=True).order_by(desc(DateActive.date_ini)).all()
+            activos = session.query(DateActive).order_by(
+                desc(DateActive.activo)).all()
             return activos
         except Exception as e:
-            print(f"Error al listar fechas activos: {e}")
+            messagebox.showerror(
+                "ERROR", f"Error al listar fechas activos: {e}")
             return []
 
     def actualizar_false(self, objeto):            

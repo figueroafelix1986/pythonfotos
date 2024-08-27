@@ -32,12 +32,18 @@ class NuevoTrabajadorVentana:
             row=2, column=0, padx=10, pady=5)
         self.salario_entry = tk.Entry(self.nueva_ventana, font=self.font)
         self.salario_entry.grid(row=2, column=1, padx=10, pady=5)
+        
+        tk.Label(self.nueva_ventana, text="Correo:", font=self.font).grid(
+            row=3, column=0, padx=10, pady=5)
+        self.correo_entry = tk.Entry(self.nueva_ventana, font=self.font)
+        self.correo_entry.grid(row=3, column=1, padx=10, pady=5)
+
 
         # Crear checkbox para activo
         self.activo_var = tk.BooleanVar(value=True)
         self.activo_checkbox = tk.Checkbutton(
             self.nueva_ventana, text="Activo", variable=self.activo_var)
-        self.activo_checkbox.grid(row=3, columnspan=2, pady=5)
+        self.activo_checkbox.grid(row=4, columnspan=2, pady=5)
 
         # Crear un botón Guardar en la nueva ventana
 
@@ -59,7 +65,8 @@ class NuevoTrabajadorVentana:
 
         # Crear Treeview para listar los Fechas
         self.tree = ttk.Treeview(self.nueva_ventana, columns=(
-            "Nombre", "Apellidos", "Salario", "Activo"), show='headings')
+            "ID","Nombre", "Apellidos", "Salario", "Activo"), show='headings')
+        self.tree.heading("ID", text="ID")
         self.tree.heading("Nombre", text="Nombre")
         self.tree.heading("Apellidos", text="Apellidos")
         self.tree.heading("Salario", text="Salario")
@@ -68,10 +75,13 @@ class NuevoTrabajadorVentana:
         style.configure("Treeview", font=self.font)
         self.tree.grid(row=5, columnspan=3, padx=10, pady=10)
 
+        self.tree.column("ID", width=0, stretch=tk.NO)
+        
         # Llenar el Treeview con datos existentes
         self.cargar_datos()
         self.boton_eliminar.config(state=tk.DISABLED)
         self.boton_actualizar.config(state=tk.DISABLED)
+        
         self.tree.bind("<<TreeviewSelect>>", self.cargar_datos_seleccionados)
 
         # Centrar la ventana usando la nueva clase
@@ -81,23 +91,26 @@ class NuevoTrabajadorVentana:
     def cargar_datos(self):
 
         activos = self.controlador.listar_activos()
-        datos = [(emp.name, emp.apellidos, emp.salaries, emp.activo)
+        datos = [(emp.id, emp.name, emp.apellidos, emp.salaries, emp.activo)
             for emp in activos]
         for dato in datos:
-            self.tree.insert("", tk.END, values=dato)
+            self.tree.insert("", tk.END, values=dato)          
+        
 
     def guardar_archivo(self):
         nuevo_trabajador=Employee(name = self.nombre_entry.get(),
         apellidos = self.apellidos_entry.get(),
         salaries = self.salario_entry.get(),
+        correo=self.correo_entry.get(),
         activo = self.activo_var.get())        
         self.controlador.guardar_employee(nuevo_trabajador)    
         # Recargar el Treeview con los datos actualizados
         self.recargar_treeview()
         self.nombre_entry.delete(0, tk.END)
         self.apellidos_entry.delete(0, tk.END)
+        self.correo_entry.delete(0, tk.END)
         self.salario_entry.delete(0, tk.END)
-        self.activo_var.set(False)
+        self.activo_var.set(True)
         # messagebox.showinfo("Guardar", "Archivo guardado")
 
     def recargar_treeview(self):
@@ -114,20 +127,26 @@ class NuevoTrabajadorVentana:
         self.nueva_ventana.destroy()
 
     def cargar_datos_seleccionados(self, event):
-        selected_item = self.tree.selection()[0]
+        selected_item = self.tree.selection()[0]    
         valores = self.tree.item(selected_item, "values")
+        #seleccion = self.tree.selection()
+    
+        # Verificar si hay algún elemento seleccionado
+        #if seleccion:
+        #    selected_item = seleccion[0]
+        #    valores = self.tree.item(selected_item, "values")
 
         # Cargar los valores en los campos de entrada
         self.nombre_entry.delete(0, tk.END)
-        self.nombre_entry.insert(0, valores[0])
+        self.nombre_entry.insert(0, valores[1])
 
         self.apellidos_entry.delete(0, tk.END)
-        self.apellidos_entry.insert(0, valores[1])
+        self.apellidos_entry.insert(0, valores[2])
 
         self.salario_entry.delete(0, tk.END)
-        self.salario_entry.insert(0, valores[2])
+        self.salario_entry.insert(0, valores[3])
 
-        self.activo_var.set(valores[3] == "True")
+        self.activo_var.set(valores[4] == "True")
         self.boton_eliminar.config(state=tk.NORMAL)
         self.boton_actualizar.config(state=tk.NORMAL)
         self.boton_guardar.config(state=tk.DISABLED)
@@ -136,6 +155,7 @@ class NuevoTrabajadorVentana:
         eliminar_trabajador=Employee(name = self.nombre_entry.get(),
         apellidos = self.apellidos_entry.get(),
         salaries = self.salario_entry.get(),
+        correo = self.correo_entry.get(),
         activo = self.activo_var.get())        
         self.controlador.eliminar_employee(eliminar_trabajador) 
         
@@ -143,6 +163,7 @@ class NuevoTrabajadorVentana:
         self.nombre_entry.delete(0, tk.END)
         self.apellidos_entry.delete(0, tk.END)
         self.salario_entry.delete(0, tk.END)
+        self.correo_entry.delete(0, tk.END)
         self.activo_var.set(False)
         self.boton_eliminar.config(state=tk.DISABLED)
         self.boton_actualizar.config(state=tk.DISABLED)
@@ -153,14 +174,17 @@ class NuevoTrabajadorVentana:
         actualizar_trabajador=Employee(name = self.nombre_entry.get(),
         apellidos = self.apellidos_entry.get(),
         salaries = self.salario_entry.get(),
+        correo = self.correo_entry.get(),
         activo = self.activo_var.get())        
         self.controlador.actualizar_employee(actualizar_trabajador) 
+        
         
         self.recargar_treeview()
         self.nombre_entry.delete(0, tk.END)
         self.apellidos_entry.delete(0, tk.END)
         self.salario_entry.delete(0, tk.END)
-        self.activo_var.set(False)
+        self.correo_entry.delete(0, tk.END)
+        self.activo_var.set(True)
         self.boton_eliminar.config(state=tk.DISABLED)
         self.boton_actualizar.config(state=tk.DISABLED)
         self.boton_guardar.config(state=tk.NORMAL)

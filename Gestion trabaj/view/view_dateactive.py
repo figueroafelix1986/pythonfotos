@@ -82,6 +82,10 @@ class NuevodateActive:
         style.configure("Treeview", font=self.font)
         self.tree.grid(row=5, columnspan=5, padx=10, pady=10)
 
+        self.tree.bind("<<TreeviewSelect>>", self.cargar_datos_seleccionados)
+        self.fecha_inicio_entry.bind(
+            "<<DateEntrySelected>>", self.actualizar_fecha_fin)
+
         # Centrar la ventana usando la nueva clase
         centrar = CentrarVentana(self.nueva_ventana)
         centrar.centrar()
@@ -91,8 +95,7 @@ class NuevodateActive:
         self.boton_eliminar.config(state=tk.DISABLED)
         self.boton_actualizar.config(state=tk.DISABLED)
         
-        self.tree.bind("<<TreeviewSelect>>", self.cargar_datos_seleccionados)
-        self.fecha_inicio_entry.bind("<<DateEntrySelected>>", self.actualizar_fecha_fin)
+
 
     def cargar_datos(self):
 
@@ -101,10 +104,7 @@ class NuevodateActive:
                  for emp in activos]
         for dato in datos:
             self.tree.insert("", tk.END, values=dato)
-        # messagebox.showinfo("prueba")
-        # datos = list_trabj()
-        # for dato in datos:
-        #    self.tree.insert("", tk.END, values=dato)
+
 
     def guardar_archivo(self):
 
@@ -114,8 +114,8 @@ class NuevodateActive:
         self.controler.guardar_date_active(date_activo)
         # messagebox.showinfo("Guardar")
         self.recargar_treeview()
-        self.fecha_inicio_entry.delete(0, tk.END)
-        self.fecha_fin_entry.delete(0, tk.END)
+        # self.fecha_inicio_entry.delete(0, tk.END)
+        # self.fecha_fin_entry.delete(0, tk.END)
         self.activo_var.set(True)
 
     def eliminar_archivo(self):
@@ -142,24 +142,30 @@ class NuevodateActive:
         valores = self.tree.item(selected_item, "values")
 
         # Cargar los valores en los campos de entrada
-        self.nombre_entry.delete(0, tk.END)
-        self.nombre_entry.insert(0, valores[0])
+        self.fecha_inicio_entry.delete(0, tk.END)
+        self.fecha_inicio_entry.insert(0, valores[0])
 
-        self.apellidos_entry.delete(0, tk.END)
-        self.apellidos_entry.insert(0, valores[1])
+        self.fecha_fin_entry.config(state='enabled')
 
-        self.salario_entry.delete(0, tk.END)
-        self.salario_entry.insert(0, valores[2])
+        self.fecha_fin_entry.delete(0, tk.END)
+        self.fecha_fin_entry.insert(0, valores[1])
+        self.fecha_fin_entry.config(state='disabled')
 
-        self.activo_var.set(valores[3] == "True")
+        self.activo_var.set(valores[2] == "True")
         self.boton_eliminar.config(state=tk.NORMAL)
         self.boton_actualizar.config(state=tk.NORMAL)
         self.boton_guardar.config(state=tk.DISABLED)
         
     def actualizar_fecha_fin(self, event):
+        print("Prueba")
         # Obtener la nueva fecha de inicio
         nueva_fecha_ini = self.fecha_inicio_entry.get_date()
         # Calcular el último día del mes basado en la nueva fecha de inicio
         ultimo_dia_mes = (nueva_fecha_ini + timedelta(days=32)).replace(day=1) - timedelta(days=1)
         # Actualizar la fecha de fin
-        self.fecha_fin_entry.set_date(ultimo_dia_mes)
+        # self.fecha_fin_entry.set_date(ultimo_dia_mes)
+        self.fecha_fin_entry = DateEntry(self.nueva_ventana, font=self.font, date_pattern='y-mm-dd',
+                                         year=ultimo_dia_mes.year, month=ultimo_dia_mes.month, day=ultimo_dia_mes.day)
+        self.fecha_fin_entry.grid(
+            row=0, column=3, padx=self.padx, pady=self.pady)
+        self.fecha_fin_entry.config(state='disabled')
