@@ -1,5 +1,9 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+from ttkthemes import ThemedTk
+from tkinter import ttk
+
+
 #from .datework import insertar_trab, list_trabj, eliminar_trab, actualizar_trab
 from .common import *
 from controllers.Cemployee import Employee, ControllersEmployee
@@ -12,7 +16,9 @@ class NuevoDatWorkVentana:
     def __init__(self, root):
         self.root = root
         self.font= ("Arial", 12)
-        self.nueva_ventana = tk.Toplevel(self.root)
+
+        # self.nueva_ventana = tk.Toplevel(self.root)
+        self.nueva_ventana = ThemedTk(theme="acsb")
         self.control_datework = ControllersDateWork()
         self.nueva_ventana.title("Datos de asistencia")
         self.control_empl = ControllersEmployee()
@@ -32,7 +38,7 @@ class NuevoDatWorkVentana:
         tk.Label(self.nueva_ventana, text="Fecha", font=self.font).grid(
             row=0, column=0, padx=10, pady=5)
         self.fecha_inicio_entry = DateEntry(
-            self.nueva_ventana, font=self.font, date_pattern='y-mm-dd', hoy=hoy)
+            self.nueva_ventana, font=self.font, date_pattern='y-mm-dd', hoy=hoy, state='readonly')
         self.fecha_inicio_entry.grid(row=0, column=1, padx=10, pady=5)
 
         # Crear etiquetas y campos de entrada
@@ -47,9 +53,10 @@ class NuevoDatWorkVentana:
         tk.Label(self.nueva_ventana, text="Incidencia:", font=self.font).grid(
             row=2, column=0, padx=10, pady=5)
         self.nombre_incidencia = ttk.Combobox(
-            self.nueva_ventana, font=self.font)
+            self.nueva_ventana, font=self.font, state='readonly')
         self.nombre_incidencia['values'] = ('X', '-', '2')  # Añadir opciones
         self.nombre_incidencia.grid(row=2, column=1, padx=10, pady=5)
+        self.nombre_incidencia.set('X')  # Establecer valor por defecto
 
         tk.Label(self.nueva_ventana, text="Salario:", font=self.font).grid(
             row=3, column=0, padx=10, pady=5)
@@ -66,12 +73,20 @@ class NuevoDatWorkVentana:
         self.tree.heading("Salario", text="Salario")
         style = ttk.Style()
         style.configure("Treeview", font=self.font)
-        self.tree.grid(row=5, columnspan=3, padx=10, pady=10)
+        self.tree.grid(row=5, columnspan=4, padx=10, pady=10)
+
+        self.tree.column("ID", width=0, stretch=tk.NO, anchor='center')
+        self.tree.column("Nombre", anchor='center')
+        self.tree.column("Fecha", anchor='center')
+        self.tree.column("Incidencia", anchor='center')
+        self.tree.column("Salario", anchor='center')
+
+        self.tree.tag_configure('centered', anchor='center')
 
         self.tree.column("ID", width=0, stretch=tk.NO)
 
         self.id_empleado_entry = tk.Entry(self.nueva_ventana, font=self.font)
-        self.id_empleado_entry.grid(row=3, column=5, padx=10, pady=5)
+        self.id_empleado_entry.grid(row=3, column=5, padx=10, pady=5,)
 
         # Ocultar el Entry
         self.id_empleado_entry.grid_remove()
@@ -80,11 +95,6 @@ class NuevoDatWorkVentana:
         
         # Llenar el Treeview con datos existentes
         self.cargar_datos()
-
-
-
-
-
 
         # Crear un botón Guardar en la nueva ventana
     
@@ -133,21 +143,16 @@ class NuevoDatWorkVentana:
                                   employee_id=self.id_empleado_entry.get())
         self.control_datework.guardar_date_work(datos_datework)
         self.recargar_treeview()
-
-        # Actualizar la lista de empleados y el Combobox
-        #self.actualizar_lista_empleados()
-        #self.nombre_combobox['values'] = self.nombres_apellidos
-
-        # messagebox.showinfo("Guardar", "Guardar actualizado")
-        # self.fecha_inicio_entry.delete(0, tk.END)
-        #self.nombre_combobox.delete(0, tk.END)
-        # self.nombre_incidencia.delete(0, tk.END)
+        
+        self.nombre_incidencia.delete(0, tk.END)
+        self.nombre_incidencia.set('X')
         self.salario_entry.delete(0, tk.END)
         self.id_empleado_entry.delete(0, tk.END)
 
     def on_date_selected(self, event):
         # self.nombre_combobox.delete(0, tk.END)
         self.nombre_incidencia.delete(0, tk.END)
+        self.nombre_incidencia.set('X')
         self.salario_entry.delete(0, tk.END)
         self.recargar_treeview()
 
