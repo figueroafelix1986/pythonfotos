@@ -5,6 +5,9 @@ import pandas as pd
 from datetime import datetime
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
+from openpyxl.styles import PatternFill
+from tkinter import messagebox
+
 
 
 class ReportesRango:
@@ -61,14 +64,20 @@ class ReportesRango:
         result_df.to_excel(file_name, index=False)
         
         # Ajustar el ancho de las celdas
-        self.adjust_column_width(file_name)
-        print(f"Reporte exportado a {file_name}")
+        self.adjust_column_width(file_name, date_range)
+        messagebox.showinfo("Reporte",f"Reporte exportado a {file_name}")
         
         
-    def adjust_column_width(self, file_name):
+    def adjust_column_width(self, file_name,date_range):
         # Cargar el libro de Excel
         workbook = load_workbook(file_name)
         worksheet = workbook.active
+        
+        # Insertar fila con los días de la semana
+        days_of_week = ['', '', ''] + [date.strftime('%a')[:2] for date in date_range]
+        worksheet.insert_rows(1)
+        for col_num, value in enumerate(days_of_week, 1):
+            worksheet.cell(row=1, column=col_num, value=value)
 
         # Ajustar el ancho de las columnas
         for col in worksheet.columns:
@@ -80,6 +89,9 @@ class ReportesRango:
                         max_length = len(cell.value)
                 except:
                     pass
+                # Pintar de rojo las celdas donde work sea "-"
+                if cell.value == "-":
+                    cell.fill = PatternFill(start_color="FF0000", end_color="FF0000", fill_type="solid")
             adjusted_width = (max_length + 2)
             worksheet.column_dimensions[column].width = adjusted_width
 

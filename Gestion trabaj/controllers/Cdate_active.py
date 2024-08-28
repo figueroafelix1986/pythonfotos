@@ -48,7 +48,7 @@ class ControllersDateActive:
 
     def listar_date_active(self):
         try:
-            activos = session.query(DateActive).order_by(
+            activos = session.query(DateActive).filter_by(activo=True).order_by(
                 desc(DateActive.activo)).all()
             return activos
         except Exception as e:
