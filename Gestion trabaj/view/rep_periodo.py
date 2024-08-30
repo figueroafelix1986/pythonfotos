@@ -3,10 +3,11 @@ from controllers.Cdate_work import DateWork, ControllersDateWork
 from controllers.Cemployee import ControllersEmployee
 import pandas as pd
 from datetime import datetime
-from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import PatternFill
 from tkinter import messagebox
+from openpyxl import load_workbook
+import openpyxl
 
 
 
@@ -40,6 +41,10 @@ class ReportesRango:
         # Crear un DataFrame a partir de los datos
         df = pd.DataFrame(data)
 
+        # Convertir la columna 'salaries' a numérica sin redondear
+        df['salaries'] = pd.to_numeric(
+            df['salaries'], errors='coerce').round(2)
+
         # Obtener el rango de fechas
         start_date = datetime.strptime(fecha_ini, '%Y-%m-%d')
         end_date = datetime.strptime(fecha_fin, '%Y-%m-%d')
@@ -48,56 +53,75 @@ class ReportesRango:
         # Crear un DataFrame con las columnas necesarias
         columns = ['nombre', 'Salario', 'a cobrar'] + [date.strftime('%d') for date in date_range]
         result_df = pd.DataFrame(columns=columns)
+        result_df_salaries = pd.DataFrame(columns=columns)
 
-        # Rellenar el DataFrame
+        # Rellenar el DataFrame original
         for name, group in df.groupby('nombre'):
             row = {'nombre': name, 'Salario': group['salaries'].iloc[0]}
             row.update({date.strftime('%d'): '' for date in date_range})
             for _, entry in group.iterrows():
                 row[entry['date'].strftime('%d')] = entry['work']
-            row['a cobrar'] = (group['work'] == 'X').sum() * group['salaries'].iloc[0]
+            row['a cobrar'] = group.loc[group['work'].isin(
+                ['X', '2']), 'salaries'].sum()
             result_df = pd.concat([result_df, pd.DataFrame([row])], ignore_index=True)
+
+        # Rellenar el nuevo DataFrame con los valores de salaries
+        for name, group in df.groupby('nombre'):
+            row_salaries = {'nombre': name,
+                            'Salario': group['salaries'].iloc[0]}
+            row_salaries.update(
+                {date.strftime('%d'): '' for date in date_range})
+            for _, entry in group.iterrows():
+                row_salaries[entry['date'].strftime('%d')] = entry['salaries'] if (
+                    entry['work'] == 'X' or entry['work'] == '2') else entry['work']
+            row_salaries['a cobrar'] = group.loc[group['work'].isin(
+                ['X', '2']), 'salaries'].sum()
+            result_df_salaries = pd.concat(
+                [result_df_salaries, pd.DataFrame([row_salaries])], ignore_index=True)
 
         # Exportar a Excel
         report_date = datetime.now().strftime('%Y%m%d')
         file_name = f"salario_{report_date}.xlsx"
-        result_df.to_excel(file_name, index=False)
-        
-        # Ajustar el ancho de las celdas
-        self.adjust_column_width(file_name, date_range)
-        messagebox.showinfo("Reporte",f"Reporte exportado a {file_name}")
-        
-        
-    def adjust_column_width(self, file_name,date_range):
-        # Cargar el libro de Excel
-        workbook = load_workbook(file_name)
-        worksheet = workbook.active
-        
+        with pd.ExcelWriter(file_name, engine='openpyxl') as writer:
+            result_df.to_excel(writer, sheet_name='Asistencia', index=False)
+            result_df_salaries.to_excel(
+                writer, sheet_name='Salaries', index=False)
+
         # Insertar fila con los días de la semana
-        days_of_week = ['', '', ''] + [date.strftime('%a')[:2] for date in date_range]
-        worksheet.insert_rows(1)
-        for col_num, value in enumerate(days_of_week, 1):
-            worksheet.cell(row=1, column=col_num, value=value)
+        workbook = load_workbook(file_name)
+        for sheet_name in ['Asistencia', 'Salaries']:
+            worksheet = workbook[sheet_name]
+            days_of_week = ['', '', ''] + \
+                [date.strftime('%a')[:2] for date in date_range]
+            worksheet.insert_rows(1)
+            for col_num, value in enumerate(days_of_week, 1):
+                worksheet.cell(row=1, column=col_num, value=value)
 
-        # Ajustar el ancho de las columnas
-        for col in worksheet.columns:
-            max_length = 0
-            column = col[0].column_letter  # Obtener la letra de la columna
-            for cell in col:
-                try:
-                    if len(str(cell.value)) > max_length:
-                        max_length = len(cell.value)
-                except:
-                    pass
-                # Pintar de rojo las celdas donde work sea "-"
-                if cell.value == "-":
-                    cell.fill = PatternFill(start_color="FF0000", end_color="FF0000", fill_type="solid")
-            adjusted_width = (max_length + 2)
-            worksheet.column_dimensions[column].width = adjusted_width
-
-        # Guardar el libro de Excel con los ajustes
         workbook.save(file_name)
+        workbook.close()
 
+        # Ajustar el ancho de las celdas
+        self.adjust_column_width(file_name, date_range, sheet_names=[
+                                 'Asistencia', 'Salaries'])
+        messagebox.showinfo("Reporte", f"Reporte exportado a {file_name}")
+
+
+    def adjust_column_width(self, file_name, date_range, sheet_names):
+        workbook = openpyxl.load_workbook(file_name)
+        for sheet_name in sheet_names:
+            sheet = workbook[sheet_name]
+            for column in sheet.columns:
+                max_length = 0
+                column = [cell for cell in column]
+                for cell in column:
+                    try:
+                        if len(str(cell.value)) > max_length:
+                            max_length = len(cell.value)
+                    except:
+                        pass
+                adjusted_width = (max_length + 5)
+                sheet.column_dimensions[column[0].column_letter].width = adjusted_width
+        workbook.save(file_name)
 
 
 

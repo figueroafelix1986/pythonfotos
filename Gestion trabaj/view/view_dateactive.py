@@ -30,21 +30,21 @@ class NuevodateActive:
 
         # Crear etiquetas y campos de entrada
         tk.Label(self.nueva_ventana, text="Fecha Inicio:", font=self.font).grid(
-            row=0, column=0, padx=self.padx, pady=self.pady)
+            row=0, column=0, padx=self.padx, pady=self.pady, sticky="e")
         self.fecha_inicio_entry = DateEntry(self.nueva_ventana, font=self.font, date_pattern='y-mm-dd',
                                             year=primer_dia_mes.year, month=primer_dia_mes.month, day=primer_dia_mes.day)
         self.fecha_inicio_entry.grid(
-            row=0, column=1, padx=self.padx, pady=self.pady)
+            row=0, column=1, padx=self.padx, pady=self.pady, sticky="w")
 
         ultimo_dia_mes = (self.fecha_inicio_entry.get_date() + timedelta(days=32)
                           ).replace(day=1) - timedelta(days=1)
 
         tk.Label(self.nueva_ventana, text="Fecha Fin:", font=self.font).grid(
-            row=0, column=2, padx=self.padx, pady=self.pady)
+            row=0, column=2, padx=self.padx, pady=self.pady, sticky="e")
         self.fecha_fin_entry = DateEntry(self.nueva_ventana, font=self.font, date_pattern='y-mm-dd',
                                          year=ultimo_dia_mes.year, month=ultimo_dia_mes.month, day=ultimo_dia_mes.day)
         self.fecha_fin_entry.grid(
-            row=0, column=3, padx=self.padx, pady=self.pady)
+            row=0, column=3, padx=self.padx, pady=self.pady, sticky="w")
         
         self.fecha_fin_entry.config(state='disabled')
 
@@ -99,7 +99,7 @@ class NuevodateActive:
 
     def cargar_datos(self):
 
-        activos = self.controler.listar_date_active()
+        activos = self.controler.listar_date_30()
         datos = [(emp.date_ini, emp.dete_fin, emp.activo)
                  for emp in activos]
         for dato in datos:
