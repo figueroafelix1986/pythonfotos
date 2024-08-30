@@ -1,5 +1,6 @@
 from create_dabase import db
 from modelos.Memployee import Employee
+from modelos.Mdate_work import DateWork
 from tkinter import messagebox
 
 session = db.get_session()
@@ -16,10 +17,8 @@ class ControllersEmployee:
             
             # Verificar si el objeto ya existe
             existing_obj = session.query(Employee).filter_by(name=objeto.name,
-                                                             apellidos=objeto.apellidos,
-                                                             salaries=objeto.salaries,
-                                                             correo=objeto.correo,
-                                                             activo=objeto.activo).first()
+                                                             apellidos=objeto.apellidos
+                                                             ).first()
 
             if existing_obj:
                 messagebox.showerror(
@@ -36,15 +35,29 @@ class ControllersEmployee:
 
     def eliminar_employee(self, objeto):
         employee = session.query(Employee).filter_by(
-            name=objeto.name,
-            apellidos=objeto.apellidos,
-            salaries=objeto.salaries,
-            correo=objeto.correo,
-            activo=objeto.activo
-        ).first()
+        name=objeto.name,
+        apellidos=objeto.apellidos,
+        salaries=objeto.salaries,
+        correo=objeto.correo,
+        telefono=objeto.telefono,
+        direccion=objeto.direccion,
+        activo=objeto.activo
+    ).first()
+    
         if employee:
-            session.delete(employee)
-            session.commit()
+            if session.query(DateWork).filter_by(employee_id=employee.id).count() > 0:
+                messagebox.showerror("Eliminar", "No se puede eliminar el empleado porque tiene registros asociados.")
+            else:
+                try:
+                    session.delete(employee)
+                    session.commit()
+                    messagebox.showinfo("Eliminar", "Empleado eliminado exitosamente.")
+                except:
+                    session.rollback()
+                    messagebox.showerror("Eliminar", "Error al eliminar el empleado")
+        else:
+            messagebox.showerror("Eliminar", "Empleado no encontrado.")
+            
 
     def actualizar_employee(self, objeto):
         employee = session.query(Employee).filter_by(
@@ -55,6 +68,8 @@ class ControllersEmployee:
             employee.correo=objeto.correo
             employee.salaries = objeto.salaries
             employee.activo = objeto.activo
+            employee.telefono=objeto.telefono
+            employee.direccion=objeto.direccion
             session.commit()
 
     def listar_activos(self):

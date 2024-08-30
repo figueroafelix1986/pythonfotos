@@ -12,6 +12,14 @@ class ControllersDateWork:
 
     def guardar_date_work(self, objeto):
         try:
+            salaries_num = float(objeto.salaries)  # Usa float() si los salarios pueden ser decimales, si no usa int()
+            
+            # Multiplicar el salario si work es '2'
+            if objeto.work == '2':
+                objeto.salaries = salaries_num * 2
+            else:
+                objeto.salaries
+            
             # Verificar si el objeto ya existe
             existing_obj = session.query(DateWork).filter_by(date=objeto.date,
                                                             work=objeto.work,
@@ -20,7 +28,7 @@ class ControllersDateWork:
 
             if existing_obj:
                 messagebox.showerror("Guardar", "El día ya existe en la base de datos.")
-            else:
+            else:                
                 session.add(objeto)
                 session.commit()
                 messagebox.showinfo("Guardar", "Se guardó con éxito")
@@ -42,13 +50,23 @@ class ControllersDateWork:
             
             
     def actualizar_date_work(self, objeto):
+        salaries_num = float(objeto.salaries)  # Usa float() si los salarios pueden ser decimales, si no usa int()
+            
+        salaries_num = float(objeto.salaries)  # Usa float() si los salarios pueden ser decimales, si no usa int()
+            
+            # Multiplicar el salario si work es '2'
+        if objeto.work == '2':
+            objeto.salaries = salaries_num * 2
+        else:
+            objeto.salaries
+        
         datework = session.query(DateWork).filter_by(
             date=objeto.date,
-            work=objeto.apellidos
+            employee_id=objeto.employee_id
         ).first()
         if datework:
-            datework.salaries=objeto.salaries,
-            datework.employe_id=objeto.activo
+            datework.salaries=objeto.salaries
+            datework.work=objeto.work
             session.commit()
             
             

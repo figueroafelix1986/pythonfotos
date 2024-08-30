@@ -55,6 +55,16 @@ class ControllersDateActive:
             messagebox.showerror(
                 "ERROR", f"Error al listar fechas activos: {e}")
             return []
+        
+    def listar_date_30(self):
+        try:
+            activos = session.query(DateActive).order_by(
+                desc(DateActive.activo)).limit(30).all()
+            return activos
+        except Exception as e:
+            messagebox.showerror(
+                "ERROR", f"Error al listar fechas activos: {e}")
+            return []
 
     def actualizar_false(self, objeto):            
             session.query(DateActive).update({DateActive.activo: False})
