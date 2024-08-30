@@ -1,4 +1,5 @@
 from view.view_menu import *
+from ttkthemes import ThemedTk
 
 
 # Crear la ventana principal
