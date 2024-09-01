@@ -25,3 +25,15 @@ class Pedidos(models.Model):
     numero=models.IntegerField()
     fecha=models.DateField()
     entregado=models.BooleanField()
+
+
+class Factura(models.Model):
+    nombre = models.CharField(max_length=100)
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+
+
+class Servicio(models.Model):
+    factura = models.ForeignKey(
+        Factura, related_name='servicios', on_delete=models.CASCADE)
+    descripcion = models.CharField(max_length=200)
+    costo = models.DecimalField(max_digits=10, decimal_places=2)

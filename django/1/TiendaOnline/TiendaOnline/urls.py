@@ -23,5 +23,11 @@ urlpatterns = [
     path('busqueda_productos/', views.busqueda_productos),
     path('buscar/', views.buscar),
     path('contactos/', views.contacto),
+    path('crear_factura/', views.crear_factura, name='crear_factura'),
+    path('facturas/', views.factura_lista, name='factura_lista'),
+    path('guardar_factura/', views.guardar_factura, name='guardar_factura'),
+
+
+
     
 ]

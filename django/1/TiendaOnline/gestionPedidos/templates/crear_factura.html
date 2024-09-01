@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gracias</title>
+</head>
+<body>
+    <form method="post">
+        {% csrf_token %}
+        {{ factura_form.as_p }}
+        {{ servicio_formset.management_form }}
+        {% for form in servicio_formset %}
+            {{ form.as_p }}
+        {% endfor %}
+        <button type="submit">Guardar</button>
+    </form>
+    
+</body>
+</html>

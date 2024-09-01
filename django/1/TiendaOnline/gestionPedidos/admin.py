@@ -19,7 +19,12 @@ class PedidosAdmin(admin.ModelAdmin):
     date_hierarchy="fecha"
 
 
+class FacturaAdmin(admin.ModelAdmin):
+    list_display = ("nombre",)
+    readonly_fields = ('total',)
+
 #agregar en el panel de administracion tabla de clientes
 admin.site.register(Clients,ClientesAdmin)
 admin.site.register(Articulo ,ArticulosAdmin)
 admin.site.register(Pedidos,PedidosAdmin)
+admin.site.register(Factura, FacturaAdmin)

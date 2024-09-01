@@ -1,0 +1,13 @@
+<h1>Previsualización de Factura</h1>
+<p>Nombre: {{ factura.nombre }}</p>
+<p>Total: {{ factura.total }}</p>
+<h2>Servicios</h2>
+<ul>
+    {% for servicio in servicios %}
+        <li>{{ servicio.descripcion }} - {{ servicio.costo }}</li>
+    {% endfor %}
+</ul>
+<form method="post" action="{% url 'guardar_factura' %}">
+    {% csrf_token %}
+    <button type="submit">Guardar</button>
+</form>
