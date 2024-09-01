@@ -1,0 +1,28 @@
+{% extends "ProyectowebApp/base.html" %}
+
+{% load static %}
+
+
+{% block content %}
+
+<div class="container mt-5">
+    <h2>Puntualidad: Contacto</h2>
+
+    {% if "valido" in request.GET %}
+
+    <p>OK</p>
+
+    {% endif %}
+
+    <p>
+    <form action="" id="logout-form" method="POST">
+        {% csrf_token %}
+        <table>{{ m_formulario.as_table}}</table>
+        <input type="submit" value="Enviar">
+    </form>
+    </p>
+
+</div>
+
+
+{% endblock %}

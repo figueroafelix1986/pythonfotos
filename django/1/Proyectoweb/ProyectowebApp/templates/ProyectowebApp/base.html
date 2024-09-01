@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <title>Gestión de Pedidos</title>
 
+    <style>
+        .custom-link {
+            color: black;
+            text-decoration: underline;
+        }
+    </style>
+
 {% load static %}
 
     <link href="{% static 'ProyectowebApp/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -23,7 +30,8 @@
                 <li class="nav-item {% if request.path == '/servicios/' %}active{% endif %}"><a class="nav-link" href="{% url 'Servicios' %}">Servicio</a></li>
                 <li class="nav-item {% if request.path == '/tienda/' %}active{% endif %}"><a class="nav-link" href="{% url 'Tienda' %}">Tienda</a></li>
                 <li class="nav-item {% if request.path == '/contacto/' %}active{% endif %}"><a class="nav-link" href="{% url 'Contacto' %}">Contacto</a></li>
-                <li class="nav-item {% if request.path == '/blog/' %}active{% endif %}"><a class="nav-link" href="{% url 'Blog' %}">Blog</a></li>
+                <li class="nav-item {% if request.path|slice:':6' == '/blog/' %}active{% endif %}"><a class="nav-link"
+                        href="{% url 'Blog' %}">Blog</a></li>
             </ul>
         </div>
     </nav>

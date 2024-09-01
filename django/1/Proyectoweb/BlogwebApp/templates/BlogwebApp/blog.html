@@ -1,0 +1,43 @@
+{% extends "ProyectowebApp/base.html" %}
+
+{% load static %}
+
+
+{% block content %}
+
+{% for view_post in lists_post %}
+
+<div class="container mt-5">
+    <h2 class="text-center">{{ view_post.titulo }}</h2>
+    <p class="lead">{{ view_post.contenido|lower }}</p>
+    <p class="lead">{{ view_post.autor|lower|capfirst }}</p>
+
+    {% if view_post.imagen %}
+    <div class="text-center">
+        <img src="{{ view_post.imagen.url }}" class="img-fluid rounded shadow" alt="{{ view_post.titulo }}"
+            style='width: 20%'>
+    </div>
+
+    {% endif %}
+</div>
+
+
+{% endfor %}
+
+
+<section>
+    <div style="width:75%; margin:auto; text-align :center; color:black;">
+
+        Categoria :
+
+        {% for view_post in lists_post %}
+
+        {% for catego_post in view_post.categoria.all %}
+        <a href="{% url 'categoria' catego_post.id %}" class="custom-link"> {{catego_post.nombre}}</a>
+        {% endfor %}
+        {% endfor %}
+    </div>
+
+</section>
+
+{% endblock %}
