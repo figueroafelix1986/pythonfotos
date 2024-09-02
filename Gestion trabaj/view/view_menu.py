@@ -5,6 +5,7 @@ from tkinter import messagebox
 from .view_trabaj import NuevoTrabajadorVentana
 from .view_workdate import NuevoDatWorkVentana
 from .view_dateactive import NuevodateActive
+from .view_cuenta import NuevaCuenta
 from .rep_periodo import ReportesRango
 from .common import CentrarVentana
 
@@ -34,6 +35,11 @@ class AplicacionMenu:
         self.reporte_menu = tk.Menu(self.menu_bar, tearoff=0)
         self.reporte_menu.add_command(label="Reporte Periodo", command=self.reportes_periodo)
         self.menu_bar.add_cascade(label="Reportes", menu=self.reporte_menu)
+        
+        
+        self.nomencladores_menu = tk.Menu(self.menu_bar, tearoff=0)
+        self.nomencladores_menu.add_command(label="Cuentas", command=self.cuentas)
+        self.menu_bar.add_cascade(label="Nomencladores", menu=self.nomencladores_menu)
 
         # Configurar la barra de menú en la ventana principal
         self.root.config(menu=self.menu_bar)
@@ -63,6 +69,11 @@ class AplicacionMenu:
     def reportes_periodo(self):
         reportes_rango = ReportesRango()
         reportes_rango.list_rangofecha()
+        
+    def cuentas(self):
+        #pass
+        NuevaCuenta(self.root)
+    
 
     def salir(self):
         self.root.quit()

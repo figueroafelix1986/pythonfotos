@@ -1,16 +1,16 @@
 from modelos.librery import Base, Column, Integer, String, DECIMAL, BOOLEAN, relationship
-from .cuentas_subcuentas import cuentas_subcuentas
 
 
 class Cuentas(Base):
     __tablename__ = 'cuentas'
     id = Column(Integer, primary_key=True)
     code = Column(String)
-    nombre = Column(String)    
+    nombre = Column(String)
+    activo = Column(BOOLEAN)
     
-    subcuentas = relationship('Subcuenta', secondary=cuentas_subcuentas, back_populates='cuentas')
+    #subcuentas = relationship('Subcuenta', back_populates='cuentas')
 
-    def __init__(self, code, nombre):
+    def __init__(self, code, nombre, activo):
         self.code = code
         self.nombre = nombre
-        
+        self.activo = activo
