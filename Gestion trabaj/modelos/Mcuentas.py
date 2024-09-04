@@ -8,7 +8,7 @@ class Cuentas(Base):
     nombre = Column(String)
     activo = Column(BOOLEAN)
     
-    #subcuentas = relationship('Subcuenta', back_populates='cuentas')
+    subcuentas = relationship("CuentaSubCuenta", back_populates="cuenta")
 
     def __init__(self, code, nombre, activo):
         self.code = code
