@@ -5,8 +5,8 @@ from modelos.Mdate_work import DateWork
 from modelos.Memployee import Employee
 from modelos.Mdate_activ import DateActive
 from modelos.Mcuentas import Cuentas
-#from modelos.Msubcuenta import Subcuenta
-#from modelos.cuentas_subcuentas import CuentasSubcuentas
+from modelos.Msubcuenta import SubCuentas
+from modelos.Mcuenta_subcuenta import CuentaSubCuenta
 
 
 
