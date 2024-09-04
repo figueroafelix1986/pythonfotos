@@ -6,6 +6,7 @@ from .view_trabaj import NuevoTrabajadorVentana
 from .view_workdate import NuevoDatWorkVentana
 from .view_dateactive import NuevodateActive
 from .view_cuenta import NuevaCuenta
+from .view_subcuenta import NuevaSubCuenta
 from .rep_periodo import ReportesRango
 from .common import CentrarVentana
 
@@ -38,7 +39,8 @@ class AplicacionMenu:
         
         
         self.nomencladores_menu = tk.Menu(self.menu_bar, tearoff=0)
-        self.nomencladores_menu.add_command(label="Cuentas", command=self.cuentas)
+        self.nomencladores_menu.add_command(label="Cuentas", command=self.cuentas)        
+        self.nomencladores_menu.add_command(label="SubCuentas", command=self.subcuenta)
         self.menu_bar.add_cascade(label="Nomencladores", menu=self.nomencladores_menu)
 
         # Configurar la barra de menú en la ventana principal
@@ -73,6 +75,11 @@ class AplicacionMenu:
     def cuentas(self):
         #pass
         NuevaCuenta(self.root)
+    
+    def subcuenta(self):
+        #pass
+        NuevaSubCuenta(self.root)   
+        
     
 
     def salir(self):

@@ -3,18 +3,18 @@ from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
 from datetime import datetime, timedelta
 from .common import *
-from controllers.Ccuentas import Cuentas, ControllerCuentas
+from controllers.Csubcuenta import SubCuentas, ControllerSubCuentas
 
 
-class NuevaCuenta:
+class NuevaSubCuenta:
     def __init__(self, root):
         self.root = root
         self.font = ("Arial", 12)
         self.nueva_ventana = tk.Toplevel(self.root)
-        self.nueva_ventana.title("Agergar Cuenta")
+        self.nueva_ventana.title("Agergar SubCuenta")
         self.padx = 10
         self.pady = 5
-        self.controler = ControllerCuentas()
+        self.controler = ControllerSubCuentas()
 
     # Ocultar la ventana principal
         self.root.withdraw()
@@ -60,16 +60,13 @@ class NuevaCuenta:
 
         # Crear Treeview para listar los empleados
         self.tree = ttk.Treeview(self.nueva_ventana, columns=(
-            "ID","Codigo", "Cuenta",  "Activo"), show='headings')
-        self.tree.heading("ID", text="ID")
+            "Codigo", "Cuenta",  "Activo"), show='headings')
         self.tree.heading("Codigo", text="Codigo")
         self.tree.heading("Cuenta", text="Nombre Cuenta")
         self.tree.heading("Activo", text="Activo")
         style = ttk.Style()
         style.configure("Treeview", font=self.font)
         self.tree.grid(row=5, columnspan=5, padx=10, pady=10)
-        
-        self.tree.column("ID", width=0, stretch=tk.NO)
 
         # self.tree.bind("<<TreeviewSelect>>", self.cargar_datos_seleccionados)
         # self.fecha_inicio_entry.bind("<<DateEntrySelected>>", self.actualizar_fecha_fin)
@@ -79,7 +76,7 @@ class NuevaCuenta:
         centrar.centrar()
 
         # Llenar el Treeview con datos existentes
-        self.cargar_datos()
+        # self.cargar_datos()
         self.boton_eliminar.config(state=tk.DISABLED)
         self.boton_actualizar.config(state=tk.DISABLED)
 
@@ -90,11 +87,11 @@ class NuevaCuenta:
         self.nueva_ventana.destroy()
 
     def guardar_archivo(self):
-        nuevo_cuenta=Cuentas(code = self.codigo_entry.get(),
+        nuevo_cuenta=SubCuentas(code = self.codigo_entry.get(),
         nombre = self.cuenta_entry.get(),    
         activo = self.activo_var.get()
         )        
-        self.controler.guardar_cuenta(nuevo_cuenta)    
+        self.controler.guardar_subcuenta(nuevo_cuenta)    
         # Recargar el Treeview con los datos actualizados
         #self.recargar_treeview()
         self.codigo_entry.delete(0, tk.END)
@@ -107,12 +104,3 @@ class NuevaCuenta:
 
     def actualizar_archivo(self):
         messagebox.showinfo("Actualizar", "Guardar info")
-
-    def cargar_datos(self):
-
-        activos = self.controler.listar_cuentas()
-        # self.control_empl.get_trabajador_id()
-        datos = [(cuent.id, cuent.code, cuent.nombre, cuent.activo)
-                 for cuent in activos]
-        for dato in datos:
-            self.tree.insert("", tk.END, values=dato)
