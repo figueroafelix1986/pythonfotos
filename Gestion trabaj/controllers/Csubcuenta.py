@@ -1,7 +1,5 @@
 from create_dabase import db
-# from modelos.Mcuentas import Cuentas
 from modelos.Msubcuenta import SubCuentas
-# from modelos.cuentas_subcuentas import CuentasSubcuentas
 from tkinter import messagebox
 from sqlalchemy import desc
 
